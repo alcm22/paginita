@@ -17,3 +17,7 @@ test-results/
 # System files
 .DS_Store
 Thumbs.db
+
+# Local package manager cache and TypeScript build info
+.pnpm-store/
+*.tsbuildinfo

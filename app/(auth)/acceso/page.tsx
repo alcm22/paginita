@@ -3,8 +3,11 @@
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function AccesoPage() {
+  const router = useRouter();
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +30,7 @@ export default function AccesoPage() {
       return;
     }
 
-    window.location.href = "/inicio";
+ router.push("/inicio");
   }
 
   return (
