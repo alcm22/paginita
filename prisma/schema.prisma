@@ -16,8 +16,11 @@ model User {
   bio          String?  @db.VarChar(280)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-    sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
+
+  sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
   receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
+  friendshipsAsUserA     Friendship[]    @relation("FriendshipUserA")
+  friendshipsAsUserB     Friendship[]    @relation("FriendshipUserB")
 }
 
 model FriendRequest {
@@ -31,4 +34,17 @@ model FriendRequest {
 
   @@unique([senderId, receiverId])
   @@index([receiverId])
+}
+
+model Friendship {
+  id        String   @id @default(cuid())
+  userAId   String
+  userBId   String
+  createdAt DateTime @default(now())
+
+  userA User @relation("FriendshipUserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB User @relation("FriendshipUserB", fields: [userBId], references: [id], onDelete: Cascade)
+
+  @@unique([userAId, userBId])
+  @@index([userBId])
 }
