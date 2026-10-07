@@ -44,6 +44,24 @@ export async function POST(request: Request) {
     );
   }
 
+  const [userAId, userBId] = [session.user.id, receiverId].sort();
+
+const existingFriendship = await prisma.friendship.findUnique({
+  where: {
+    userAId_userBId: {
+      userAId,
+      userBId,
+    },
+  },
+});
+
+if (existingFriendship) {
+  return NextResponse.json(
+    { error: "Ya sois amigos." },
+    { status: 409 },
+  );
+}
+
   const existingRequest = await prisma.friendRequest.findUnique({
     where: {
       senderId_receiverId: {
