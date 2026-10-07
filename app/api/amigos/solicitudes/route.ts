@@ -75,3 +75,35 @@ export async function POST(request: Request) {
     { status: 201 },
   );
 }
+
+export async function GET() {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
+    return NextResponse.json(
+      { error: "Debes iniciar sesión." },
+      { status: 401 },
+    );
+  }
+
+  const requests = await prisma.friendRequest.findMany({
+    where: {
+      receiverId: session.user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      sender: {
+        select: {
+          id: true,
+          displayName: true,
+          username: true,
+          avatarUrl: true,
+        },
+      },
+    },
+  });
+
+  return NextResponse.json(requests);
+}
