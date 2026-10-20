@@ -71,6 +71,24 @@ if (existingFriendship) {
     },
   });
 
+  const incomingRequest = await prisma.friendRequest.findUnique({
+  where: {
+    senderId_receiverId: {
+      senderId: receiverId,
+      receiverId: session.user.id,
+    },
+  },
+});
+
+if (incomingRequest) {
+  return NextResponse.json(
+    {
+      error: "Esta persona ya te ha enviado una solicitud de amistad.",
+    },
+    { status: 409 },
+  );
+}
+
   if (existingRequest) {
     return NextResponse.json(
       { error: "Ya existe una solicitud pendiente." },
