@@ -21,6 +21,10 @@ model User {
   receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
   friendshipsAsUserA     Friendship[]    @relation("FriendshipUserA")
   friendshipsAsUserB     Friendship[]    @relation("FriendshipUserB")
+  posts                  Post[]
+  likes                  PostLike[]
+  comments Comment[]
+  commentReplies CommentReply[]
 }
 
 model FriendRequest {
@@ -48,3 +52,64 @@ model Friendship {
   @@unique([userAId, userBId])
   @@index([userBId])
 }
+
+model Post {
+  id        String   @id @default(cuid())
+  content   String   @db.VarChar(5000)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes  PostLike[]
+  comments Comment[]
+
+  @@index([authorId, createdAt])
+}
+
+model PostLike {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@index([postId])
+}
+
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.VarChar(2000)
+  authorId  String
+  postId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  replies CommentReply[]
+
+  @@index([postId, createdAt])
+  @@index([authorId])
+}
+
+
+model CommentReply {
+  id        String   @id @default(cuid())
+  content   String   @db.VarChar(2000)
+  authorId  String
+  commentId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author  User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([commentId, createdAt])
+  @@index([authorId])
+}
+

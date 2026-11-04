@@ -75,3 +75,232 @@ a { color: inherit; text-decoration: none; }
   .app-main { padding: 40px 24px; }
   .page-placeholder { padding-top: 4vh; }
 }
+
+
+/* Página de inicio y formulario de publicaciones */
+
+.inicio {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.inicio-cabecera {
+  margin-bottom: 32px;
+}
+
+.inicio-cabecera h1 {
+  margin: 0;
+  font-size: clamp(36px, 5vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+}
+
+.inicio-cabecera > p:last-child {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.publicacion-formulario {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.publicacion-formulario h2 {
+  margin: 0 0 20px;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+.publicacion-formulario form {
+  display: grid;
+  gap: 12px;
+}
+
+.publicacion-formulario label {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.publicacion-formulario textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--background);
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}
+
+.publicacion-formulario textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+.publicacion-formulario textarea:focus {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.publicacion-formulario-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.publicacion-formulario-pie span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.publicacion-formulario button {
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #102016;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 160ms ease, opacity 160ms ease;
+}
+
+.publicacion-formulario button:hover:not(:disabled) {
+  background: var(--accent-strong);
+}
+
+.publicacion-formulario button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.publicacion-formulario [role="status"] {
+  margin: 4px 0 0;
+  color: var(--accent-strong);
+  font-size: 14px;
+}
+
+@media (max-width: 520px) {
+  .publicacion-formulario {
+    padding: 18px;
+  }
+
+  .publicacion-formulario-pie {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .publicacion-formulario button {
+    width: 100%;
+  }
+}
+
+
+/* Muro de publicaciones */
+
+.muro-publicaciones {
+  display: grid;
+  gap: 18px;
+  margin-top: 36px;
+}
+
+.muro-publicaciones > h2 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+.muro-vacio {
+  margin: 0;
+  padding: 24px;
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.lista-publicaciones {
+  display: grid;
+  gap: 16px;
+}
+
+.tarjeta-publicacion {
+  min-width: 0;
+  padding: 22px;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.publicacion-autor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-publicacion {
+  display: grid;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface-raised);
+  color: var(--accent-strong);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.avatar-publicacion img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-publicacion span {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+}
+
+.publicacion-autor strong {
+  display: block;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.publicacion-autor p {
+  margin: 1px 0 2px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.publicacion-autor time {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.texto-publicacion {
+  margin: 20px 0 0;
+  color: var(--text);
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+
+@media (max-width: 520px) {
+  .tarjeta-publicacion {
+    padding: 18px;
+  }
+}
