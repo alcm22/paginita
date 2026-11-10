@@ -18,15 +18,15 @@ export function BuscadorUsuarios() {
     const busqueda = termino.trim();
 
     if (busqueda.length < 2) {
-      setResultados([]);
-      setCargando(false);
       return;
     }
 
-    setCargando(true);
-    setMensajeError(null);
+    let cancelado = false;
 
     const temporizador = setTimeout(async () => {
+      setCargando(true);
+      setMensajeError(null);
+
       try {
         const res = await fetch(
           `/api/usuarios/buscar?q=${encodeURIComponent(busqueda)}`,
@@ -37,20 +37,40 @@ export function BuscadorUsuarios() {
         }
 
         const datos: PerfilBasico[] = await res.json();
-        setResultados(datos);
+        if (!cancelado) {
+          setResultados(datos);
+        }
       } catch (err) {
-        setMensajeError(
-          err instanceof Error
-            ? err.message
-            : "Ha ocurrido un error al buscar usuarios.",
-        );
+        if (!cancelado) {
+          setMensajeError(
+            err instanceof Error
+              ? err.message
+              : "Ha ocurrido un error al buscar usuarios.",
+          );
+        }
       } finally {
-        setCargando(false);
+        if (!cancelado) {
+          setCargando(false);
+        }
       }
     }, 300);
 
-    return () => clearTimeout(temporizador);
+    return () => {
+      cancelado = true;
+      clearTimeout(temporizador);
+    };
   }, [termino]);
+
+  function handleChangeTermino(e: React.ChangeEvent<HTMLInputElement>) {
+    const nuevoValor = e.target.value;
+    setTermino(nuevoValor);
+
+    if (nuevoValor.trim().length < 2) {
+      setResultados([]);
+      setCargando(false);
+      setMensajeError(null);
+    }
+  }
 
   async function enviarSolicitud(destinatarioId: string) {
     setEnviandoId(destinatarioId);
@@ -91,6 +111,8 @@ export function BuscadorUsuarios() {
     }
   }
 
+  const resultadosVisibles = termino.trim().length < 2 ? [] : resultados;
+
   return (
     <section className="seccion-buscar-amigos" aria-labelledby="titulo-buscar-amigos">
       <h2 id="titulo-buscar-amigos">Buscar nuevas amistades</h2>
@@ -103,7 +125,7 @@ export function BuscadorUsuarios() {
           id="busqueda-usuarios"
           type="search"
           value={termino}
-          onChange={(e) => setTermino(e.target.value)}
+          onChange={handleChangeTermino}
           placeholder="Escribe al menos 2 letras para buscar personas..."
           autoComplete="off"
         />
@@ -117,13 +139,13 @@ export function BuscadorUsuarios() {
         </p>
       )}
 
-      {termino.trim().length >= 2 && !cargando && resultados.length === 0 && (
+      {termino.trim().length >= 2 && !cargando && resultadosVisibles.length === 0 && (
         <p className="texto-ayuda">No se encontraron personas con ese nombre o usuario.</p>
       )}
 
-      {resultados.length > 0 && (
+      {resultadosVisibles.length > 0 && (
         <ul className="lista-resultados-busqueda">
-          {resultados.map((usuario) => {
+          {resultadosVisibles.map((usuario) => {
             const yaEnviada = solicitudesEnviadas.includes(usuario.id);
             const enviando = enviandoId === usuario.id;
 
