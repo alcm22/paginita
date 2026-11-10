@@ -72,3 +72,45 @@ Al terminar cada sesión, actualizar este documento con:
 - Próxima tarea acordada.
 
 No marcar una funcionalidad como terminada sin comprobarla.
+
+## Registro de trabajo - 10/11/2026
+
+- **Tareas realizadas:**
+  1. Comprobada y consolidada la funcionalidad de búsqueda de usuarios y gestión de solicitudes de amistad.
+  2. Implementado feed filtrado con pestañas "Amigos" (solo posts propios y de amistades) y "Todos" (feed global).
+  3. Creado el sistema completo de notificaciones: modelo en BD (Neon), generador automático para likes, comentarios, respuestas y solicitudes, vista `/notificaciones` y acción de marcar como leídas.
+  4. Implementadas páginas de perfil propias y ajenas (`/perfil/[username]`) con estadísticas (amigos, posts), estado interactivo de amistad y enlaces directos desde el feed.
+  5. Creada la edición y eliminación de publicaciones propias (API PATCH/DELETE con autorización 403, pruebas unitarias y componente interactivo con edición inline).
+
+- **Archivos modificados/creados:**
+  - `prisma/schema.prisma`
+  - `features/publicaciones/consultar-publicaciones.ts`
+  - `app/(social)/inicio/page.tsx`
+  - `features/notificaciones/crear-notificacion.ts`
+  - `features/notificaciones/consultar-notificaciones.ts`
+  - `app/api/notificaciones/marcar-leidas/route.ts`
+  - `app/(social)/notificaciones/page.tsx`
+  - `components/notificaciones/boton-marcar-leidas.tsx`
+  - `app/api/publicaciones/[id]/me-gusta/route.ts`
+  - `app/api/publicaciones/[id]/comentarios/route.ts`
+  - `app/api/publicaciones/[id]/comentarios/[comentarioId]/respuestas/route.ts`
+  - `app/api/amigos/solicitudes/route.ts`
+  - `features/perfiles/consultar-perfil.ts`
+  - `components/perfil/boton-accion-perfil.tsx`
+  - `app/(social)/perfil/[username]/page.tsx`
+  - `app/(social)/perfil/page.tsx`
+  - `app/api/publicaciones/[id]/route.ts`
+  - `tests/unit/api/editar-eliminar-publicacion.test.ts`
+  - `components/publicaciones/cuerpo-publicacion.tsx`
+
+- **Pruebas ejecutadas y resultados:**
+  - Vitest: 11 suites de tests ejecutadas, 59 pruebas unitarias pasando al 100% en verde.
+  - Comprobación manual en navegador: alternancia de feed, recepción y marcado de notificaciones, navegación entre perfiles, edición en vivo de publicaciones y eliminación con confirmación.
+
+- **Problemas encontrados:**
+  - En PowerShell, las rutas con paréntesis como `(social)` requirieron entrecomillado.
+  - Sincronización de tipos de Prisma requirió `pnpm prisma generate` tras el modelo `Notification`. Ambos resueltos satisfactoriamente.
+
+- **Próximas tareas acordadas:**
+  - Implementar la edición de perfil (biografía, nombre visible, avatar) en `/configuracion`.
+  - Revisión visual y preparación para despliegue / pruebas E2E (Playwright).
