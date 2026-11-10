@@ -1,16 +1,27 @@
-
-import { FormularioPublicacion } from "@/components/publicaciones/formulario-publicacion";
-import { consultarPublicaciones } from "@/features/publicaciones/consultar-publicaciones";
-import { formatearTiempo } from "@/features/fechas/formatear-tiempo";
+import Link from "next/link";
 import Image from "next/image";
 import { getServerSession } from "next-auth";
+
 import { authOptions } from "@/lib/auth";
+import { FormularioPublicacion } from "@/components/publicaciones/formulario-publicacion";
+import { consultarPublicaciones, FiltroFeed } from "@/features/publicaciones/consultar-publicaciones";
+import { formatearTiempo } from "@/features/fechas/formatear-tiempo";
 import { BotonMeGusta } from "@/components/publicaciones/boton-me-gusta";
 import { ListaComentarios } from "@/components/publicaciones/lista-comentarios";
 
-export default async function InicioPage() {
+type InicioPageProps = {
+  searchParams?: Promise<{ filtro?: string }> | { filtro?: string };
+};
+
+export default async function InicioPage({ searchParams }: InicioPageProps) {
   const session = await getServerSession(authOptions);
-  const publicaciones = await consultarPublicaciones(session?.user?.id);
+  const resolvedParams = await searchParams;
+
+  const estaAutenticado = Boolean(session?.user?.id);
+  const filtro: FiltroFeed =
+    resolvedParams?.filtro === "todos" || !estaAutenticado ? "todos" : "amigos";
+
+  const publicaciones = await consultarPublicaciones(session?.user?.id, filtro);
 
   return (
     <section className="inicio">
@@ -23,12 +34,55 @@ export default async function InicioPage() {
       <FormularioPublicacion />
 
       <section className="muro-publicaciones" aria-labelledby="titulo-muro">
-        <h2 id="titulo-muro">Publicaciones recientes</h2>
+        <div className="flex items-center justify-between border-b pb-3 mb-6">
+          <h2 id="titulo-muro" className="text-xl font-bold m-0">
+            {filtro === "amigos" ? "Publicaciones de amigos" : "Todas las publicaciones"}
+          </h2>
+
+          <nav className="flex gap-2" aria-label="Filtro de publicaciones">
+            <Link
+              href="/inicio?filtro=amigos"
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                filtro === "amigos"
+                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300"
+              }`}
+            >
+              Amigos
+            </Link>
+            <Link
+              href="/inicio?filtro=todos"
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                filtro === "todos"
+                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300"
+              }`}
+            >
+              Todos
+            </Link>
+          </nav>
+        </div>
 
         {publicaciones.length === 0 ? (
-          <p className="muro-vacio">
-            Todavía no hay publicaciones. ¡Sé la primera persona en compartir algo!
-          </p>
+          <div className="muro-vacio">
+            {filtro === "amigos" ? (
+              <div>
+                <p>Todavía no hay publicaciones de tus amigos.</p>
+                <p className="mt-2 text-sm opacity-80">
+                  Puedes buscar a otras personas en la sección de{" "}
+                  <Link href="/amigos" className="underline font-semibold">
+                    Amigos
+                  </Link>{" "}
+                  o explorar el muro{" "}
+                  <Link href="/inicio?filtro=todos" className="underline font-semibold">
+                    Global (Todos)
+                  </Link>.
+                </p>
+              </div>
+            ) : (
+              <p>Todavía no hay publicaciones. ¡Sé la primera persona en compartir algo!</p>
+            )}
+          </div>
         ) : (
           <div className="lista-publicaciones">
             {publicaciones.map((publicacion) => (
@@ -43,11 +97,11 @@ export default async function InicioPage() {
                         height={44}
                         className="avatar-imagen"
                       />
-                       ) : (
-                        <span aria-hidden="true">
-                           {publicacion.author.displayName.charAt(0).toUpperCase()}
-                        </span>
-                       )}
+                    ) : (
+                      <span aria-hidden="true">
+                        {publicacion.author.displayName.charAt(0).toUpperCase()}
+                      </span>
+                    )}
                   </div>
 
                   <div>
@@ -71,7 +125,6 @@ export default async function InicioPage() {
                   usuarioActualId={session?.user?.id ?? ""}
                   comentarios={publicacion.comments}
                 />
-                
               </article>
             ))}
           </div>

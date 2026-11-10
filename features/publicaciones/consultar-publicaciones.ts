@@ -1,7 +1,41 @@
 import { prisma } from "@/lib/db";
 
-export async function consultarPublicaciones(usuarioId?: string) {
+export type FiltroFeed = "amigos" | "todos";
+
+export async function consultarPublicaciones(
+  usuarioId?: string,
+  filtro: FiltroFeed = "todos",
+) {
+  let whereClause = undefined;
+
+  if (filtro === "amigos") {
+    if (!usuarioId) {
+      return [];
+    }
+
+    const amistades = await prisma.friendship.findMany({
+      where: {
+        OR: [{ userAId: usuarioId }, { userBId: usuarioId }],
+      },
+      select: {
+        userAId: true,
+        userBId: true,
+      },
+    });
+
+    const amigosIds = amistades.map((amistad) =>
+      amistad.userAId === usuarioId ? amistad.userBId : amistad.userAId,
+    );
+
+    whereClause = {
+      authorId: {
+        in: [usuarioId, ...amigosIds],
+      },
+    };
+  }
+
   return prisma.post.findMany({
+    where: whereClause,
     orderBy: {
       createdAt: "desc",
     },
