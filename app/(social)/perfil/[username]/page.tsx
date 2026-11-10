@@ -8,6 +8,7 @@ import { consultarPerfil } from "@/features/perfiles/consultar-perfil";
 import { BotonMeGusta } from "@/components/publicaciones/boton-me-gusta";
 import { ListaComentarios } from "@/components/publicaciones/lista-comentarios";
 import { BotonAccionPerfil } from "@/components/perfil/boton-accion-perfil";
+import { CuerpoPublicacion } from "@/components/publicaciones/cuerpo-publicacion";
 
 type PageProps = {
   params: Promise<{ username: string }>;
@@ -122,8 +123,12 @@ export default async function PerfilUsuarioPage({ params }: PageProps) {
                   </div>
                 </header>
 
-                <p className="texto-publicacion">{publicacion.content}</p>
-
+                <CuerpoPublicacion
+                publicacionId={publicacion.id}
+                contenidoInicial={publicacion.content}
+                esAutor={session?.user?.id === publicacion.author.id}
+                />
+                
                 <BotonMeGusta
                   publicacionId={publicacion.id}
                   meGustaInicial={publicacion.likes.length > 0}

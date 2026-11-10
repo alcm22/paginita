@@ -8,6 +8,7 @@ import { consultarPublicaciones, FiltroFeed } from "@/features/publicaciones/con
 import { formatearTiempo } from "@/features/fechas/formatear-tiempo";
 import { BotonMeGusta } from "@/components/publicaciones/boton-me-gusta";
 import { ListaComentarios } from "@/components/publicaciones/lista-comentarios";
+import { CuerpoPublicacion } from "@/components/publicaciones/cuerpo-publicacion";
 
 type InicioPageProps = {
   searchParams?: Promise<{ filtro?: string }> | { filtro?: string };
@@ -126,8 +127,13 @@ export default async function InicioPage({ searchParams }: InicioPageProps) {
                   </div>
                 </header>
 
-                <p className="texto-publicacion">{publicacion.content}</p>
-                <BotonMeGusta
+              <CuerpoPublicacion
+                publicacionId={publicacion.id}
+                contenidoInicial={publicacion.content}
+                esAutor={session?.user?.id === publicacion.author.id}
+              /> 
+
+               <BotonMeGusta
                   publicacionId={publicacion.id}
                   meGustaInicial={publicacion.likes.length > 0}
                   cantidadInicial={publicacion._count.likes}
