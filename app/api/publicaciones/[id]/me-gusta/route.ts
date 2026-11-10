@@ -1,9 +1,9 @@
-
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { crearNotificacion } from "@/features/notificaciones/crear-notificacion";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -27,7 +27,7 @@ export async function POST(
   try {
     const post = await prisma.post.findUnique({
       where: { id: postId },
-      select: { id: true },
+      select: { id: true, authorId: true },
     });
 
     if (!post) {
@@ -66,6 +66,14 @@ export async function POST(
         userId: session.user.id,
         postId,
       },
+    });
+
+    // Notificar al autor del post
+    await crearNotificacion({
+      usuarioDestinoId: post.authorId,
+      actorId: session.user.id,
+      tipo: "LIKE",
+      publicacionId: postId,
     });
 
     const likesCount = await prisma.postLike.count({

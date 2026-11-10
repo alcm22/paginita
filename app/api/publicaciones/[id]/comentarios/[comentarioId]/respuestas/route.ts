@@ -1,9 +1,10 @@
-
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
+
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { crearNotificacion } from "@/features/notificaciones/crear-notificacion";
 
 const esquemaRespuesta = z.object({
   content: z.string().trim().min(1).max(2000),
@@ -61,6 +62,7 @@ export async function POST(
       select: {
         id: true,
         postId: true,
+        authorId: true,
       },
     });
 
@@ -91,6 +93,14 @@ export async function POST(
           },
         },
       },
+    });
+
+    // Notificar al autor del comentario que ha recibido una respuesta
+    await crearNotificacion({
+      usuarioDestinoId: comentario.authorId,
+      actorId: usuarioId,
+      tipo: "REPLY",
+      publicacionId,
     });
 
     return NextResponse.json(

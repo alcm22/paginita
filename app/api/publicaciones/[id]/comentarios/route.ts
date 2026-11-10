@@ -1,9 +1,10 @@
-
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
+
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { crearNotificacion } from "@/features/notificaciones/crear-notificacion";
 
 const esquemaComentario = z.object({
   content: z.string().trim().min(1, "El comentario no puede estar vacío.").max(
@@ -55,7 +56,7 @@ export async function POST(
   try {
     const publicacion = await prisma.post.findUnique({
       where: { id: publicacionId },
-      select: { id: true },
+      select: { id: true, authorId: true },
     });
 
     if (!publicacion) {
@@ -84,6 +85,14 @@ export async function POST(
           },
         },
       },
+    });
+
+    // Notificar al autor de la publicación
+    await crearNotificacion({
+      usuarioDestinoId: publicacion.authorId,
+      actorId: usuarioId,
+      tipo: "COMMENT",
+      publicacionId,
     });
 
     return NextResponse.json({ comentario }, { status: 201 });

@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { crearNotificacion } from "@/features/notificaciones/crear-notificacion";
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
@@ -46,21 +47,21 @@ export async function POST(request: Request) {
 
   const [userAId, userBId] = [session.user.id, receiverId].sort();
 
-const existingFriendship = await prisma.friendship.findUnique({
-  where: {
-    userAId_userBId: {
-      userAId,
-      userBId,
+  const existingFriendship = await prisma.friendship.findUnique({
+    where: {
+      userAId_userBId: {
+        userAId,
+        userBId,
+      },
     },
-  },
-});
+  });
 
-if (existingFriendship) {
-  return NextResponse.json(
-    { error: "Ya sois amigos." },
-    { status: 409 },
-  );
-}
+  if (existingFriendship) {
+    return NextResponse.json(
+      { error: "Ya sois amigos." },
+      { status: 409 },
+    );
+  }
 
   const existingRequest = await prisma.friendRequest.findUnique({
     where: {
@@ -72,22 +73,22 @@ if (existingFriendship) {
   });
 
   const incomingRequest = await prisma.friendRequest.findUnique({
-  where: {
-    senderId_receiverId: {
-      senderId: receiverId,
-      receiverId: session.user.id,
+    where: {
+      senderId_receiverId: {
+        senderId: receiverId,
+        receiverId: session.user.id,
+      },
     },
-  },
-});
+  });
 
-if (incomingRequest) {
-  return NextResponse.json(
-    {
-      error: "Esta persona ya te ha enviado una solicitud de amistad.",
-    },
-    { status: 409 },
-  );
-}
+  if (incomingRequest) {
+    return NextResponse.json(
+      {
+        error: "Esta persona ya te ha enviado una solicitud de amistad.",
+      },
+      { status: 409 },
+    );
+  }
 
   if (existingRequest) {
     return NextResponse.json(
@@ -101,6 +102,13 @@ if (incomingRequest) {
       senderId: session.user.id,
       receiverId,
     },
+  });
+
+  // Notificar al usuario que ha recibido una solicitud de amistad
+  await crearNotificacion({
+    usuarioDestinoId: receiverId,
+    actorId: session.user.id,
+    tipo: "FRIEND_REQUEST",
   });
 
   return NextResponse.json(

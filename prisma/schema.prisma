@@ -23,8 +23,10 @@ model User {
   friendshipsAsUserB     Friendship[]    @relation("FriendshipUserB")
   posts                  Post[]
   likes                  PostLike[]
-  comments Comment[]
-  commentReplies CommentReply[]
+  comments               Comment[]
+  commentReplies         CommentReply[]
+  notifications          Notification[]  @relation("ReceivedNotifications")
+  triggeredNotifications Notification[]  @relation("TriggeredNotifications")
 }
 
 model FriendRequest {
@@ -60,9 +62,10 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  author User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  likes  PostLike[]
-  comments Comment[]
+  author        User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes         PostLike[]
+  comments      Comment[]
+  notifications Notification[]
 
   @@index([authorId, createdAt])
 }
@@ -80,7 +83,6 @@ model PostLike {
   @@index([postId])
 }
 
-
 model Comment {
   id        String   @id @default(cuid())
   content   String   @db.VarChar(2000)
@@ -89,14 +91,13 @@ model Comment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author  User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post    Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
   replies CommentReply[]
 
   @@index([postId, createdAt])
   @@index([authorId])
 }
-
 
 model CommentReply {
   id        String   @id @default(cuid())
@@ -113,3 +114,19 @@ model CommentReply {
   @@index([authorId])
 }
 
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  actorId   String
+  type      String   // "FRIEND_REQUEST", "LIKE", "COMMENT", "REPLY"
+  read      Boolean  @default(false)
+  postId    String?
+  createdAt DateTime @default(now())
+
+  user  User  @relation("ReceivedNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  actor User  @relation("TriggeredNotifications", fields: [actorId], references: [id], onDelete: Cascade)
+  post  Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([userId, read])
+}
