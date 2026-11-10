@@ -88,7 +88,10 @@ export default async function InicioPage({ searchParams }: InicioPageProps) {
             {publicaciones.map((publicacion) => (
               <article className="tarjeta-publicacion" key={publicacion.id}>
                 <header className="publicacion-autor">
-                  <div className="avatar-publicacion">
+                  <Link
+                    href={`/perfil/${publicacion.author.username}`}
+                    className="avatar-publicacion hover:opacity-85 transition-opacity"
+                  >
                     {publicacion.author.avatarUrl ? (
                       <Image
                         src={publicacion.author.avatarUrl}
@@ -102,11 +105,21 @@ export default async function InicioPage({ searchParams }: InicioPageProps) {
                         {publicacion.author.displayName.charAt(0).toUpperCase()}
                       </span>
                     )}
-                  </div>
+                  </Link>
 
                   <div>
-                    <strong>{publicacion.author.displayName}</strong>
-                    <p>@{publicacion.author.username}</p>
+                    <Link
+                      href={`/perfil/${publicacion.author.username}`}
+                      className="hover:underline font-bold text-inherit block"
+                    >
+                      {publicacion.author.displayName}
+                    </Link>
+                    <Link
+                      href={`/perfil/${publicacion.author.username}`}
+                      className="text-xs text-zinc-500 hover:underline block"
+                    >
+                      @{publicacion.author.username}
+                    </Link>
                     <time dateTime={publicacion.createdAt.toISOString()}>
                       {formatearTiempo(publicacion.createdAt)}
                     </time>
