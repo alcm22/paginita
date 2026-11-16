@@ -114,3 +114,22 @@ No marcar una funcionalidad como terminada sin comprobarla.
 - **Próximas tareas acordadas:**
   - Implementar la edición de perfil (biografía, nombre visible, avatar) en `/configuracion`.
   - Revisión visual y preparación para despliegue / pruebas E2E (Playwright).
+
+  ## Registro de trabajo - 10/11/2026
+
+- **Tareas realizadas:**
+  1. Comprobada y consolidada la búsqueda de usuarios y gestión de amistades (solicitudes y listado).
+  2. Implementado feed filtrado de inicio con alternancia entre pestañas "Amigos" y "Todos".
+  3. Creado sistema integral de notificaciones (modelo Prisma en Neon, generación en likes, comentarios, respuestas y solicitudes, y vista `/notificaciones` con marcado de leídas).
+  4. Creadas páginas dinámicas de perfil (`/perfil/[username]`) con estadísticas (posts, amigos), estado interactivo de relación de amistad y enlaces directos desde los autores del feed.
+  5. Creada edición y borrado de publicaciones propias con autorización estricta (403), pruebas unitarias y edición inline en el cliente.
+  6. Implementada edición de perfil en `/configuracion` (nombre para mostrar, biografía con contador de 280 caracteres, URL de avatar y vista previa) con API PATCH y pruebas unitarias.
+
+- **Pruebas ejecutadas y resultados:**
+  - Vitest: 12 archivos de pruebas, 64 tests unitarios ejecutados y pasando al 100% en verde.
+  - Navegador (localhost): comprobado el flujo completo de perfiles, edición de bio/nombre, notificaciones en vivo y borrado de posts.
+
+- **Próximas tareas disponibles:**
+  - Ejecutar verificación general (`pnpm check`) que incluye linting, chequeo de tipos TypeScript y build de producción.
+  - Implementar módulo de fotos (`/fotos`) o mensajería privada (`/mensajes`).
+  - Revisión y pulido del diseño visual con Tailwind.
