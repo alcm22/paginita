@@ -78,21 +78,21 @@ export function CuerpoPublicacion({
 
   if (editando) {
     return (
-      <form onSubmit={guardarEdicion} className="my-2 flex flex-col gap-2">
+      <form onSubmit={guardarEdicion} className="mt-3 flex flex-col gap-2">
         <textarea
           value={contenido}
           onChange={(e) => setContenido(e.target.value)}
           rows={3}
           maxLength={5000}
           required
-          className="w-full p-2 text-sm border rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="pg-input"
         />
-        {error && <p className="text-xs text-red-500">{error}</p>}
+        {error && <p className="text-xs text-red-400">{error}</p>}
         <div className="flex gap-2">
           <button
             type="submit"
             disabled={guardando || !contenido.trim()}
-            className="px-3 py-1 text-xs font-medium bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 rounded hover:opacity-90 disabled:opacity-50"
+            className="pg-btn text-xs px-3 py-1.5"
           >
             {guardando ? "Guardando..." : "Guardar"}
           </button>
@@ -102,7 +102,7 @@ export function CuerpoPublicacion({
               setEditando(false);
               setContenido(contenidoInicial);
             }}
-            className="px-3 py-1 text-xs border rounded hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="pg-btn-secundario text-xs px-3 py-1.5"
           >
             Cancelar
           </button>
@@ -112,13 +112,13 @@ export function CuerpoPublicacion({
   }
 
   return (
-    <div className="my-2">
+    <div className="mt-3">
       {contenidoInicial && (
-        <p className="publicacion-contenido whitespace-pre-wrap">{contenidoInicial}</p>
+        <p className="texto-publicacion">{contenidoInicial}</p>
       )}
 
       {imagenUrl && (
-        <div className="mt-3 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800">
+        <div className="mt-3 rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--background)]">
           <Image
             src={imagenUrl}
             alt="Imagen de la publicación"
@@ -131,11 +131,11 @@ export function CuerpoPublicacion({
       )}
 
       {esAutor && (
-        <div className="flex gap-3 mt-2 text-xs text-zinc-500">
+        <div className="flex gap-4 mt-3 text-xs text-[var(--muted)]">
           <button
             type="button"
             onClick={() => setEditando(true)}
-            className="hover:text-blue-600 cursor-pointer"
+            className="hover:text-[var(--accent-strong)] cursor-pointer font-semibold"
           >
             Editar
           </button>
@@ -143,7 +143,7 @@ export function CuerpoPublicacion({
             type="button"
             onClick={eliminar}
             disabled={eliminando}
-            className="hover:text-red-600 cursor-pointer disabled:opacity-50"
+            className="hover:text-red-400 cursor-pointer disabled:opacity-50 font-semibold"
           >
             {eliminando ? "Eliminando..." : "Eliminar"}
           </button>

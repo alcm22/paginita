@@ -35,7 +35,7 @@ export default async function InicioPage({ searchParams }: InicioPageProps) {
       <FormularioPublicacion />
 
       <section className="muro-publicaciones" aria-labelledby="titulo-muro">
-        <div className="flex items-center justify-between border-b pb-3 mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] pb-3 mb-2">
           <h2 id="titulo-muro" className="text-xl font-bold m-0">
             {filtro === "amigos" ? "Publicaciones de amigos" : "Todas las publicaciones"}
           </h2>
@@ -43,21 +43,13 @@ export default async function InicioPage({ searchParams }: InicioPageProps) {
           <nav className="flex gap-2" aria-label="Filtro de publicaciones">
             <Link
               href="/inicio?filtro=amigos"
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                filtro === "amigos"
-                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300"
-              }`}
+              className={filtro === "amigos" ? "pg-tab-activa" : "pg-tab"}
             >
               Amigos
             </Link>
             <Link
               href="/inicio?filtro=todos"
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                filtro === "todos"
-                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300"
-              }`}
+              className={filtro === "todos" ? "pg-tab-activa" : "pg-tab"}
             >
               Todos
             </Link>
@@ -69,13 +61,13 @@ export default async function InicioPage({ searchParams }: InicioPageProps) {
             {filtro === "amigos" ? (
               <div>
                 <p>Todavía no hay publicaciones de tus amigos.</p>
-                <p className="mt-2 text-sm opacity-80">
-                  Puedes buscar a otras personas en la sección de{" "}
-                  <Link href="/amigos" className="underline font-semibold">
+                <p className="mt-2 text-sm opacity-90">
+                  Puedes buscar a otras personas en{" "}
+                  <Link href="/amigos" className="underline font-semibold text-[var(--accent-strong)]">
                     Amigos
                   </Link>{" "}
                   o explorar el muro{" "}
-                  <Link href="/inicio?filtro=todos" className="underline font-semibold">
+                  <Link href="/inicio?filtro=todos" className="underline font-semibold text-[var(--accent-strong)]">
                     Global (Todos)
                   </Link>.
                 </p>
@@ -99,6 +91,7 @@ export default async function InicioPage({ searchParams }: InicioPageProps) {
                         alt={`Foto de perfil de ${publicacion.author.displayName}`}
                         width={44}
                         height={44}
+                        unoptimized
                         className="avatar-imagen"
                       />
                     ) : (
@@ -117,7 +110,7 @@ export default async function InicioPage({ searchParams }: InicioPageProps) {
                     </Link>
                     <Link
                       href={`/perfil/${publicacion.author.username}`}
-                      className="text-xs text-zinc-500 hover:underline block"
+                      className="text-xs text-[var(--muted)] hover:underline block"
                     >
                       @{publicacion.author.username}
                     </Link>
@@ -127,14 +120,14 @@ export default async function InicioPage({ searchParams }: InicioPageProps) {
                   </div>
                 </header>
 
-              <CuerpoPublicacion
-                imagenUrl={publicacion.imageUrl}
-                publicacionId={publicacion.id}
-                contenidoInicial={publicacion.content}
-                esAutor={session?.user?.id === publicacion.author.id}
-              /> 
+                <CuerpoPublicacion
+                  imagenUrl={publicacion.imageUrl}
+                  publicacionId={publicacion.id}
+                  contenidoInicial={publicacion.content}
+                  esAutor={session?.user?.id === publicacion.author.id}
+                />
 
-               <BotonMeGusta
+                <BotonMeGusta
                   publicacionId={publicacion.id}
                   meGustaInicial={publicacion.likes.length > 0}
                   cantidadInicial={publicacion._count.likes}

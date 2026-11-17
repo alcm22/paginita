@@ -16,9 +16,9 @@ export function BotonCerrarSesion() {
       type="button"
       onClick={() => void cerrarSesion()}
       disabled={saliendo}
-      className="mt-2 w-full text-left text-xs px-3 py-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50 cursor-pointer"
+      className="pg-btn-secundario logout-btn"
     >
-      {saliendo ? "Cerrando sesión..." : "Cerrar sesión"}
+      {saliendo ? "Saliendo..." : "Cerrar sesión"}
     </button>
   );
 }

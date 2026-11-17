@@ -12,7 +12,7 @@ export default async function NotificacionesPage() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    redirect("/iniciar-sesion");
+    redirect("/acceso");
   }
 
   const notificaciones = await consultarNotificaciones(session.user.id);
@@ -34,18 +34,19 @@ export default async function NotificacionesPage() {
   }
 
   return (
-    <section className="max-w-2xl mx-auto py-6 px-4">
-      <header className="flex items-center justify-between border-b pb-4 mb-6">
+    <section className="max-w-3xl mx-auto">
+      <header className="pg-cabecera flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Notificaciones</h1>
-          <p className="text-sm text-zinc-500">Mantente al tanto de la actividad de tu cuenta</p>
+          <p className="eyebrow">Actividad</p>
+          <h1>Notificaciones</h1>
+          <p>Mantente al tanto de la actividad de tu cuenta.</p>
         </div>
 
         {tieneNoLeidas && <BotonMarcarLeidas />}
       </header>
 
       {notificaciones.length === 0 ? (
-        <div className="text-center py-12 text-zinc-500">
+        <div className="pg-vacio">
           <p>No tienes notificaciones todavía.</p>
         </div>
       ) : (
@@ -53,19 +54,20 @@ export default async function NotificacionesPage() {
           {notificaciones.map((notif) => (
             <article
               key={notif.id}
-              className={`flex items-start gap-3 p-4 rounded-lg border transition-colors ${
+              className={`flex items-start gap-3 p-4 rounded-xl border transition-colors ${
                 notif.read
-                  ? "bg-transparent border-zinc-200 dark:border-zinc-800"
-                  : "bg-blue-50/60 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800"
+                  ? "bg-[var(--surface)] border-[var(--border)]"
+                  : "bg-[#1a2b21] border-[#4b7d5f]"
               }`}
             >
-              <div className="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden bg-zinc-200 flex items-center justify-center font-bold text-zinc-600">
+              <div className="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden border border-[var(--border)] bg-[#365543] flex items-center justify-center font-bold text-[#eaffdb]">
                 {notif.actor.avatarUrl ? (
                   <Image
                     src={notif.actor.avatarUrl}
                     alt={notif.actor.displayName}
                     width={40}
                     height={40}
+                    unoptimized
                     className="object-cover w-full h-full"
                   />
                 ) : (
@@ -74,29 +76,26 @@ export default async function NotificacionesPage() {
               </div>
 
               <div className="flex-1 min-w-0">
-                <p className="text-sm">
-                  <strong className="font-semibold text-zinc-900 dark:text-zinc-100">
+                <p className="text-sm text-[var(--text)] m-0">
+                  <strong className="font-semibold">
                     {notif.actor.displayName}
                   </strong>{" "}
                   {textoNotificacion(notif.type)}
                 </p>
 
                 {notif.post && (
-                  <p className="text-xs text-zinc-500 truncate mt-1 italic">
+                  <p className="text-xs text-[var(--muted)] truncate mt-1 italic">
                     &ldquo;{notif.post.content}&rdquo;
                   </p>
                 )}
 
-                <time className="text-xs text-zinc-400 mt-1 block">
+                <time className="text-xs text-[var(--muted)] mt-1 block">
                   {formatearTiempo(notif.createdAt)}
                 </time>
               </div>
 
               {notif.type === "FRIEND_REQUEST" && (
-                <Link
-                  href="/amigos"
-                  className="text-xs bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 px-3 py-1.5 rounded-md font-medium hover:opacity-90"
-                >
+                <Link href="/amigos" className="pg-btn text-xs">
                   Ver solicitud
                 </Link>
               )}

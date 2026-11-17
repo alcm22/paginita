@@ -29,16 +29,18 @@ export default async function ConfiguracionPage() {
   }
 
   return (
-    <section className="max-w-2xl mx-auto py-6 px-4">
-      <header className="border-b pb-4 mb-6">
+    <section className="max-w-3xl mx-auto">
+      <header className="pg-cabecera">
         <p className="eyebrow">Cuenta y preferencias</p>
-        <h1 className="text-2xl font-bold">Editar perfil</h1>
-        <p className="text-sm text-zinc-500">
-          Personaliza tu información pública y cómo te ven otras personas en Paginita.
+        <h1>Configuración del perfil</h1>
+        <p>
+          Personaliza tu información pública, tu privacidad de mensajes y cómo te ven en Paginita.
         </p>
       </header>
 
-      <FormularioEditarPerfil usuario={usuario} />
+      <div className="pg-card p-6">
+        <FormularioEditarPerfil usuario={usuario} />
+      </div>
     </section>
   );
 }

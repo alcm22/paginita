@@ -28,18 +28,19 @@ export default async function PerfilUsuarioPage({ params }: PageProps) {
   const { usuario, estadoAmistad, publicaciones } = datos;
 
   return (
-    <section className="max-w-2xl mx-auto py-6 px-4">
+    <section className="max-w-3xl mx-auto">
       {/* Cabecera del perfil */}
-      <header className="bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 mb-8 shadow-sm">
-        <div className="flex items-start justify-between gap-4">
+      <header className="pg-card p-6 mb-8">
+        <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-20 h-20 rounded-full overflow-hidden bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-2xl font-bold text-zinc-600 dark:text-zinc-300">
+            <div className="w-20 h-20 rounded-full overflow-hidden border border-[var(--border)] bg-[var(--surface-raised)] flex items-center justify-center text-2xl font-bold text-[var(--accent-strong)] flex-shrink-0">
               {usuario.avatarUrl ? (
                 <Image
                   src={usuario.avatarUrl}
                   alt={usuario.displayName}
                   width={80}
                   height={80}
+                  unoptimized
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -48,8 +49,8 @@ export default async function PerfilUsuarioPage({ params }: PageProps) {
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold">{usuario.displayName}</h1>
-              <p className="text-zinc-500">@{usuario.username}</p>
+              <h1 className="text-2xl font-bold m-0">{usuario.displayName}</h1>
+              <p className="text-sm text-[var(--muted)] m-0 mt-0.5">@{usuario.username}</p>
             </div>
           </div>
 
@@ -64,12 +65,12 @@ export default async function PerfilUsuarioPage({ params }: PageProps) {
               estadoAmistad === "AMIGOS" ? (
                 <Link
                   href={`/mensajes?con=${usuario.username}`}
-                  className="text-xs px-3 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                  className="pg-btn-secundario text-xs"
                 >
                   Enviar mensaje
                 </Link>
               ) : (
-                <span className="text-xs text-zinc-400">
+                <span className="text-xs text-[var(--muted)]">
                   Solo acepta mensajes de amistades
                 </span>
               ))}
@@ -77,26 +78,30 @@ export default async function PerfilUsuarioPage({ params }: PageProps) {
         </div>
 
         {usuario.bio && (
-          <p className="mt-4 text-zinc-700 dark:text-zinc-300 whitespace-pre-line">
+          <p className="mt-4 text-sm text-[var(--text)] whitespace-pre-line">
             {usuario.bio}
           </p>
         )}
 
-        <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center gap-6 text-sm text-zinc-600 dark:text-zinc-400">
+        <div className="mt-6 pt-4 border-t border-[var(--border)] flex flex-wrap items-center gap-6 text-sm text-[var(--muted)]">
           <div>
-            <strong className="text-zinc-900 dark:text-zinc-100 font-bold">
+            <strong className="text-[var(--text)] font-bold">
               {usuario.totalPublicaciones}
             </strong>{" "}
             publicaciones
           </div>
           <div>
-            <strong className="text-zinc-900 dark:text-zinc-100 font-bold">
+            <strong className="text-[var(--text)] font-bold">
               {usuario.totalAmigos}
             </strong>{" "}
             amigos
           </div>
-          <div className="text-xs text-zinc-400">
-            Se unió en {new Date(usuario.createdAt).toLocaleDateString("es-ES", { month: "long", year: "numeric" })}
+          <div className="text-xs">
+            Se unió en{" "}
+            {new Date(usuario.createdAt).toLocaleDateString("es-ES", {
+              month: "long",
+              year: "numeric",
+            })}
           </div>
         </div>
       </header>
@@ -108,11 +113,11 @@ export default async function PerfilUsuarioPage({ params }: PageProps) {
         </h2>
 
         {publicaciones.length === 0 ? (
-          <div className="text-center py-12 border border-dashed rounded-xl text-zinc-500">
+          <div className="pg-vacio">
             <p>Este usuario todavía no ha compartido ninguna publicación.</p>
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="lista-publicaciones">
             {publicaciones.map((publicacion) => (
               <article className="tarjeta-publicacion" key={publicacion.id}>
                 <header className="publicacion-autor">
@@ -123,6 +128,7 @@ export default async function PerfilUsuarioPage({ params }: PageProps) {
                         alt={`Foto de ${publicacion.author.displayName}`}
                         width={44}
                         height={44}
+                        unoptimized
                         className="avatar-imagen"
                       />
                     ) : (
@@ -142,12 +148,12 @@ export default async function PerfilUsuarioPage({ params }: PageProps) {
                 </header>
 
                 <CuerpoPublicacion
-                imagenUrl={publicacion.imageUrl}
-                publicacionId={publicacion.id}
-                contenidoInicial={publicacion.content}
-                esAutor={session?.user?.id === publicacion.author.id}
+                  publicacionId={publicacion.id}
+                  contenidoInicial={publicacion.content}
+                  imagenUrl={publicacion.imageUrl}
+                  esAutor={session?.user?.id === publicacion.author.id}
                 />
-                
+
                 <BotonMeGusta
                   publicacionId={publicacion.id}
                   meGustaInicial={publicacion.likes.length > 0}

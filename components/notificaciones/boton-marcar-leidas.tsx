@@ -27,7 +27,7 @@ export function BotonMarcarLeidas() {
     <button
       onClick={marcarLeidas}
       disabled={cargando}
-      className="text-xs font-medium text-blue-600 hover:underline disabled:opacity-50 cursor-pointer"
+      className="pg-btn-secundario text-xs"
     >
       {cargando ? "Marcando..." : "Marcar todas como leídas"}
     </button>

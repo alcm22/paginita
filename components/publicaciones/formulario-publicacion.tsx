@@ -86,8 +86,8 @@ export function FormularioPublicacion() {
           disabled={enviando}
         />
 
-        <div className="mt-3">
-          <label htmlFor="imagen-publicacion" className="block text-sm font-medium mb-1">
+        <div className="mt-1">
+          <label htmlFor="imagen-publicacion" className="block mb-1">
             Imagen (URL opcional)
           </label>
           <input
@@ -98,12 +98,12 @@ export function FormularioPublicacion() {
             onChange={(event) => setImageUrl(event.target.value)}
             placeholder="https://ejemplo.com/foto.jpg"
             disabled={enviando}
-            className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="pg-input"
           />
         </div>
 
         {mostrarPreview && (
-          <div className="mt-3 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800 max-w-md">
+          <div className="mt-2 rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--background)] max-w-md">
             <Image
               src={imagenLimpia}
               alt="Vista previa de la imagen"

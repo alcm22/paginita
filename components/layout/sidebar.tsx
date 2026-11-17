@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
-import { ContadorNoLeidos } from "@/components/mensajes/contador-no-leidos";
+import { NavLinks } from "@/components/layout/nav-links";
 import { BotonCerrarSesion } from "@/components/layout/boton-cerrar-sesion";
 
 export type UsuarioSidebar = {
@@ -9,16 +9,6 @@ export type UsuarioSidebar = {
   username: string;
   avatarUrl: string | null;
 };
-
-const navigation = [
-  { href: "/inicio", label: "Inicio", icon: "⌂" },
-  { href: "/perfil", label: "Mi perfil", icon: "◉" },
-  { href: "/amigos", label: "Amigos", icon: "♧" },
-  { href: "/fotos", label: "Fotos", icon: "▧" },
-  { href: "/mensajes", label: "Mensajes", icon: "✉" },
-  { href: "/notificaciones", label: "Notificaciones", icon: "◌" },
-  { href: "/configuracion", label: "Configuración", icon: "⚙" },
-];
 
 export function Sidebar({
   mensajesNoLeidos = 0,
@@ -32,22 +22,16 @@ export function Sidebar({
 
   return (
     <aside className="sidebar" aria-label="Navegación principal">
-      <Logo />
-      <nav className="main-nav">
-        {navigation.map((item) => (
-          <Link className="nav-link" href={item.href} key={item.href}>
-            <span aria-hidden="true" className="nav-icon">{item.icon}</span>
-            <span>{item.label}</span>
-            {item.href === "/mensajes" && (
-              <ContadorNoLeidos inicial={mensajesNoLeidos} />
-            )}
-          </Link>
-        ))}
-      </nav>
+      <div className="sidebar-brand">
+        <Logo />
+      </div>
+
+      <NavLinks mensajesNoLeidos={mensajesNoLeidos} />
+
       <div className="sidebar-footer">
         <Link
           href="/perfil"
-          className="profile-chip hover:opacity-90 transition-opacity"
+          className="profile-chip"
           aria-label={`Ir al perfil de ${nombre}`}
         >
           <span className="avatar overflow-hidden" aria-hidden="true">

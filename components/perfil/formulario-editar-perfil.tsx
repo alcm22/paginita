@@ -67,8 +67,8 @@ export function FormularioEditarPerfil({ usuario }: { usuario: UsuarioInicial })
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 max-w-xl">
       {mensajeExito && (
-        <div className="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-sm flex items-center justify-between">
-          <span>✓ ¡Perfil actualizado correctamente!</span>
+        <div className="pg-alerta-ok flex items-center justify-between gap-3">
+          <span>✓ Perfil actualizado correctamente.</span>
           <Link
             href={`/perfil/${usuario.username}`}
             className="underline font-semibold hover:opacity-80"
@@ -78,23 +78,19 @@ export function FormularioEditarPerfil({ usuario }: { usuario: UsuarioInicial })
         </div>
       )}
 
-      {error && (
-        <div className="p-4 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm">
-          {error}
-        </div>
-      )}
+      {error && <div className="pg-alerta-error">{error}</div>}
 
       {/* Vista previa de avatar y URL */}
       <div className="flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full overflow-hidden bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-xl font-bold text-zinc-600 dark:text-zinc-300 flex-shrink-0">
+        <div className="w-16 h-16 rounded-full overflow-hidden border border-[var(--border)] bg-[#365543] flex items-center justify-center text-xl font-bold text-[#eaffdb] flex-shrink-0">
           {avatarUrl ? (
             <Image
               src={avatarUrl}
               alt="Vista previa"
               width={64}
               height={64}
-              className="w-full h-full object-cover"
               unoptimized
+              className="w-full h-full object-cover"
             />
           ) : (
             displayName.charAt(0).toUpperCase() || "U"
@@ -102,7 +98,7 @@ export function FormularioEditarPerfil({ usuario }: { usuario: UsuarioInicial })
         </div>
 
         <div className="flex-1">
-          <label htmlFor="avatarUrl" className="block text-sm font-medium mb-1">
+          <label htmlFor="avatarUrl" className="block text-sm font-medium text-[var(--muted)] mb-1">
             URL de la foto de perfil (Avatar)
           </label>
           <input
@@ -111,9 +107,9 @@ export function FormularioEditarPerfil({ usuario }: { usuario: UsuarioInicial })
             value={avatarUrl}
             onChange={(e) => setAvatarUrl(e.target.value)}
             placeholder="https://ejemplo.com/tu-foto.jpg"
-            className="w-full p-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="pg-input"
           />
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-[var(--muted)] mt-1">
             Puedes pegar un enlace directo a una imagen pública.
           </p>
         </div>
@@ -121,8 +117,8 @@ export function FormularioEditarPerfil({ usuario }: { usuario: UsuarioInicial })
 
       {/* Nombre visible */}
       <div>
-        <label htmlFor="displayName" className="block text-sm font-medium mb-1">
-          Nombre para mostrar <span className="text-red-500">*</span>
+        <label htmlFor="displayName" className="block text-sm font-medium text-[var(--muted)] mb-1">
+          Nombre para mostrar <span className="text-red-400">*</span>
         </label>
         <input
           id="displayName"
@@ -132,17 +128,17 @@ export function FormularioEditarPerfil({ usuario }: { usuario: UsuarioInicial })
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
           placeholder="Tu nombre o apodo"
-          className="w-full p-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="pg-input"
         />
       </div>
 
       {/* Biografía */}
       <div>
         <div className="flex justify-between items-center mb-1">
-          <label htmlFor="bio" className="block text-sm font-medium">
+          <label htmlFor="bio" className="block text-sm font-medium text-[var(--muted)]">
             Biografía
           </label>
-          <span className="text-xs text-zinc-400">{bio.length} / 280</span>
+          <span className="text-xs text-[var(--muted)]">{bio.length} / 280</span>
         </div>
         <textarea
           id="bio"
@@ -151,20 +147,20 @@ export function FormularioEditarPerfil({ usuario }: { usuario: UsuarioInicial })
           value={bio}
           onChange={(e) => setBio(e.target.value)}
           placeholder="Cuenta un poco sobre ti, tus aficiones..."
-          className="w-full p-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="pg-input"
         />
       </div>
 
       {/* Privacidad de mensajes */}
       <div>
-        <label htmlFor="allowMessagesFrom" className="block text-sm font-medium mb-1">
+        <label htmlFor="allowMessagesFrom" className="block text-sm font-medium text-[var(--muted)] mb-1">
           ¿Quién puede enviarme mensajes privados?
         </label>
         <select
           id="allowMessagesFrom"
           value={allowMessagesFrom}
           onChange={(e) => setAllowMessagesFrom(e.target.value)}
-          className="w-full p-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="pg-input"
         >
           <option value="EVERYONE">Cualquier usuario de Paginita</option>
           <option value="FRIENDS">Solo mis amistades</option>
@@ -172,21 +168,21 @@ export function FormularioEditarPerfil({ usuario }: { usuario: UsuarioInicial })
       </div>
 
       {/* Datos no editables informativos */}
-      <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800 flex flex-col gap-3">
+      <div className="pt-4 border-t border-[var(--border)] flex flex-col gap-3">
         <div>
-          <span className="block text-xs font-semibold text-zinc-400 uppercase">
+          <span className="block text-xs font-semibold text-[var(--muted)] uppercase">
             Nombre de usuario (@)
           </span>
-          <p className="text-sm text-zinc-600 dark:text-zinc-300 font-mono">
+          <p className="text-sm text-[var(--text)] font-mono m-0 mt-0.5">
             @{usuario.username}
           </p>
         </div>
 
         <div>
-          <span className="block text-xs font-semibold text-zinc-400 uppercase">
+          <span className="block text-xs font-semibold text-[var(--muted)] uppercase">
             Correo electrónico
           </span>
-          <p className="text-sm text-zinc-600 dark:text-zinc-300">
+          <p className="text-sm text-[var(--text)] m-0 mt-0.5">
             {usuario.email}
           </p>
         </div>
@@ -197,14 +193,14 @@ export function FormularioEditarPerfil({ usuario }: { usuario: UsuarioInicial })
         <button
           type="submit"
           disabled={cargando || !displayName.trim()}
-          className="px-5 py-2.5 rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 cursor-pointer"
+          className="pg-btn"
         >
           {cargando ? "Guardando..." : "Guardar cambios"}
         </button>
 
         <Link
           href={`/perfil/${usuario.username}`}
-          className="px-4 py-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          className="pg-btn-secundario"
         >
           Cancelar
         </Link>

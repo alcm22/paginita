@@ -73,13 +73,11 @@ export default async function MensajesPage({ searchParams }: PageProps) {
   }
 
   return (
-    <section className="max-w-5xl mx-auto py-6 px-4">
-      <header className="border-b pb-4 mb-6">
+    <section className="max-w-5xl mx-auto">
+      <header className="pg-cabecera">
         <p className="eyebrow">Mensajería privada</p>
-        <h1 className="text-2xl font-bold">Mensajes</h1>
-        <p className="text-sm text-zinc-500">
-          Conversaciones privadas 1 a 1 con otros usuarios de Paginita.
-        </p>
+        <h1>Mensajes</h1>
+        <p>Conversaciones privadas 1 a 1 con otros usuarios de Paginita.</p>
       </header>
 
       <BandejaMensajes

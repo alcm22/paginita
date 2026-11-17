@@ -35,33 +35,24 @@ export default async function FotosPage({ searchParams }: PageProps) {
   ];
 
   return (
-    <section className="max-w-4xl mx-auto py-6 px-4">
-      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4 mb-6">
+    <section className="max-w-4xl mx-auto">
+      <header className="pg-cabecera flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
           <p className="eyebrow">Galería</p>
-          <h1 className="text-2xl font-bold">Fotos</h1>
-          <p className="text-sm text-zinc-500">
-            Imágenes compartidas en publicaciones de Paginita.
-          </p>
+          <h1>Fotos</h1>
+          <p>Imágenes compartidas en publicaciones de Paginita.</p>
         </div>
 
-        <nav className="flex gap-2" aria-label="Filtrar fotos">
-          {pestanas.map((p) => {
-            const activa = filtro === p.id;
-            return (
-              <Link
-                key={p.id}
-                href={`/fotos?filtro=${p.id}`}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
-                  activa
-                    ? "bg-zinc-900 text-white border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100"
-                    : "border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                }`}
-              >
-                {p.etiqueta}
-              </Link>
-            );
-          })}
+        <nav className="flex flex-wrap gap-2" aria-label="Filtrar fotos">
+          {pestanas.map((p) => (
+            <Link
+              key={p.id}
+              href={`/fotos?filtro=${p.id}`}
+              className={filtro === p.id ? "pg-tab-activa" : "pg-tab"}
+            >
+              {p.etiqueta}
+            </Link>
+          ))}
         </nav>
       </header>
 

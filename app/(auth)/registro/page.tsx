@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { hash } from "bcryptjs";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
@@ -18,9 +19,13 @@ export default function RegistroPage() {
 
   return (
     <main className="auth-page">
-      <form action={register}>
+      <form className="auth-form" action={register}>
         <p className="eyebrow">Paginita</p>
         <h1>Crea tu cuenta</h1>
+        <p className="auth-description">
+          Únete para compartir publicaciones, fotos y mensajes privados.
+        </p>
+
         <label>Nombre visible<input name="displayName" required /></label>
         <label>Nombre de usuario<input name="username" required /></label>
         <label>Correo<input name="email" type="email" required /></label>
@@ -33,6 +38,10 @@ export default function RegistroPage() {
           </select>
         </label>
         <button type="submit">Crear cuenta</button>
+
+        <p className="auth-footer">
+          ¿Ya tienes cuenta? <Link href="/acceso">Iniciar sesión</Link>
+        </p>
       </form>
     </main>
   );

@@ -40,12 +40,9 @@ export function GaleriaFotos({ fotos }: { fotos: FotoItem[] }) {
 
   if (fotos.length === 0) {
     return (
-      <div className="text-center py-12 border border-dashed border-zinc-300 dark:border-zinc-700 rounded-xl text-zinc-500">
+      <div className="pg-vacio">
         <p className="mb-3">Todavía no hay fotos en esta vista.</p>
-        <Link
-          href="/inicio"
-          className="inline-block px-4 py-2 rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-sm font-medium hover:opacity-90"
-        >
+        <Link href="/inicio" className="pg-btn text-xs">
           Publicar una foto en Inicio
         </Link>
       </div>
@@ -60,7 +57,7 @@ export function GaleriaFotos({ fotos }: { fotos: FotoItem[] }) {
             key={foto.id}
             type="button"
             onClick={() => setFotoActiva(foto)}
-            className="group relative aspect-square rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-left cursor-pointer"
+            className="group relative aspect-square rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--surface)] text-left cursor-pointer"
           >
             <Image
               src={foto.imageUrl}
@@ -70,11 +67,11 @@ export function GaleriaFotos({ fotos }: { fotos: FotoItem[] }) {
               unoptimized
               className="w-full h-full object-cover group-hover:scale-105 transition-transform"
             />
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent p-2.5 text-white">
-              <p className="text-xs font-semibold truncate">
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent p-2.5 text-white">
+              <p className="text-xs font-semibold truncate m-0">
                 {foto.author.displayName}
               </p>
-              <p className="text-[11px] opacity-80 truncate">
+              <p className="text-[11px] opacity-85 truncate m-0">
                 @{foto.author.username}
               </p>
             </div>
@@ -88,21 +85,21 @@ export function GaleriaFotos({ fotos }: { fotos: FotoItem[] }) {
           aria-modal="true"
           aria-label="Detalle de foto"
           onClick={() => setFotoActiva(null)}
-          className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-white dark:bg-zinc-900 rounded-xl max-w-2xl w-full overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-xl"
+            className="pg-card max-w-2xl w-full overflow-hidden shadow-2xl"
           >
-            <div className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800">
+            <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
               <Link
                 href={`/perfil/${fotoActiva.author.username}`}
                 className="flex items-center gap-2 hover:underline"
               >
-                <span className="font-semibold text-sm">
+                <span className="font-semibold text-sm text-[var(--text)]">
                   {fotoActiva.author.displayName}
                 </span>
-                <span className="text-xs text-zinc-500">
+                <span className="text-xs text-[var(--muted)]">
                   @{fotoActiva.author.username}
                 </span>
               </Link>
@@ -110,13 +107,13 @@ export function GaleriaFotos({ fotos }: { fotos: FotoItem[] }) {
               <button
                 type="button"
                 onClick={() => setFotoActiva(null)}
-                className="text-xs px-3 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
+                className="pg-btn-secundario text-xs"
               >
                 Cerrar
               </button>
             </div>
 
-            <div className="bg-black flex items-center justify-center max-h-[65vh] overflow-hidden">
+            <div className="bg-[var(--background)] flex items-center justify-center max-h-[65vh] overflow-hidden">
               <Image
                 src={fotoActiva.imageUrl}
                 alt={fotoActiva.content || "Foto ampliada"}
@@ -129,9 +126,11 @@ export function GaleriaFotos({ fotos }: { fotos: FotoItem[] }) {
 
             <div className="p-4 flex flex-col gap-2">
               {fotoActiva.content && (
-                <p className="text-sm whitespace-pre-wrap">{fotoActiva.content}</p>
+                <p className="text-sm text-[var(--text)] whitespace-pre-wrap m-0">
+                  {fotoActiva.content}
+                </p>
               )}
-              <div className="flex items-center justify-between text-xs text-zinc-500">
+              <div className="flex items-center justify-between text-xs text-[var(--muted)]">
                 <span>
                   {fotoActiva._count.likes} me gusta · {fotoActiva._count.comments}{" "}
                   comentarios

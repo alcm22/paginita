@@ -143,7 +143,6 @@ export function BandejaMensajes({
     }
   }
 
-  // Carga inicial si llegamos con una conversación ya seleccionada
   useEffect(() => {
     if (!conversacionInicialId) return;
     let cancelado = false;
@@ -182,7 +181,6 @@ export function BandejaMensajes({
     };
   }, [conversacionInicialId]);
 
-  // Refresco periódico suave del hilo y de la lista cada 10s
   useEffect(() => {
     const intervalo = setInterval(() => {
       void refrescarListaConversaciones();
@@ -213,7 +211,6 @@ export function BandejaMensajes({
     return () => clearInterval(intervalo);
   }, [conversacionActivaId]);
 
-  // Buscador de usuarios para iniciar nueva conversación
   useEffect(() => {
     const q = busqueda.trim();
     if (q.length < 2) return;
@@ -319,10 +316,10 @@ export function BandejaMensajes({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden bg-white dark:bg-zinc-900 min-h-[540px]">
+    <div className="pg-card grid grid-cols-1 md:grid-cols-3 overflow-hidden min-h-[540px]">
       {/* Columna izquierda: buscador y conversaciones */}
-      <aside className="md:col-span-1 border-b md:border-b-0 md:border-r border-zinc-200 dark:border-zinc-800 flex flex-col">
-        <div className="p-3 border-b border-zinc-200 dark:border-zinc-800">
+      <aside className="md:col-span-1 border-b md:border-b-0 md:border-r border-[var(--border)] flex flex-col">
+        <div className="p-3 border-b border-[var(--border)]">
           <input
             type="search"
             value={busqueda}
@@ -334,24 +331,26 @@ export function BandejaMensajes({
               }
             }}
             placeholder="Buscar usuario para escribir..."
-            className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="pg-input"
           />
 
           {buscando && (
-            <p className="text-xs text-zinc-400 mt-2">Buscando...</p>
+            <p className="text-xs text-[var(--muted)] mt-2">Buscando...</p>
           )}
 
           {resultadosBusqueda.length > 0 && (
-            <ul className="mt-2 border border-zinc-200 dark:border-zinc-700 rounded-lg divide-y divide-zinc-200 dark:divide-zinc-800 max-h-48 overflow-y-auto">
+            <ul className="mt-2 border border-[var(--border)] bg-[var(--surface-raised)] rounded-xl divide-y divide-[var(--border)] max-h-48 overflow-y-auto">
               {resultadosBusqueda.map((u) => (
                 <li key={u.id}>
                   <button
                     type="button"
                     onClick={() => seleccionarUsuarioDeBusqueda(u)}
-                    className="w-full text-left px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center gap-2 text-sm cursor-pointer"
+                    className="w-full text-left px-3 py-2 hover:bg-[var(--surface-hover)] flex items-center gap-2 text-sm cursor-pointer"
                   >
-                    <span className="font-medium truncate">{u.displayName}</span>
-                    <span className="text-xs text-zinc-500 truncate">
+                    <span className="font-medium text-[var(--text)] truncate">
+                      {u.displayName}
+                    </span>
+                    <span className="text-xs text-[var(--muted)] truncate">
                       @{u.username}
                     </span>
                   </button>
@@ -361,9 +360,9 @@ export function BandejaMensajes({
           )}
         </div>
 
-        <div className="flex-1 overflow-y-auto divide-y divide-zinc-100 dark:divide-zinc-800">
+        <div className="flex-1 overflow-y-auto divide-y divide-[var(--border)]">
           {conversaciones.length === 0 ? (
-            <p className="p-4 text-sm text-zinc-500 text-center">
+            <p className="p-4 text-sm text-[var(--muted)] text-center">
               Aún no tienes conversaciones. Busca un usuario arriba para empezar.
             </p>
           ) : (
@@ -374,11 +373,11 @@ export function BandejaMensajes({
                   key={conv.id}
                   type="button"
                   onClick={() => void abrirConversacion(conv.id)}
-                  className={`w-full text-left p-3 flex items-center gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition-colors cursor-pointer ${
-                    activa ? "bg-zinc-100 dark:bg-zinc-800" : ""
+                  className={`w-full text-left p-3 flex items-center gap-3 hover:bg-[var(--surface-hover)] transition-colors cursor-pointer ${
+                    activa ? "bg-[var(--surface-raised)]" : ""
                   }`}
                 >
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full overflow-hidden border border-[var(--border)] bg-[#365543] flex items-center justify-center font-bold text-sm text-[#eaffdb] flex-shrink-0">
                     {conv.otroUsuario.avatarUrl ? (
                       <Image
                         src={conv.otroUsuario.avatarUrl}
@@ -395,16 +394,16 @@ export function BandejaMensajes({
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-semibold text-sm truncate">
+                      <span className="font-semibold text-sm text-[var(--text)] truncate">
                         {conv.otroUsuario.displayName}
                       </span>
                       {conv.noLeidos > 0 && (
-                        <span className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-blue-600 text-white text-xs font-semibold">
+                        <span className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-[var(--accent)] text-[#102016] text-xs font-bold">
                           {conv.noLeidos}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-zinc-500 truncate">
+                    <p className="text-xs text-[var(--muted)] truncate m-0 mt-0.5">
                       {conv.ultimoMensaje
                         ? `${conv.ultimoMensaje.senderId === usuarioActualId ? "Tú: " : ""}${conv.ultimoMensaje.content}`
                         : `@${conv.otroUsuario.username}`}
@@ -420,20 +419,20 @@ export function BandejaMensajes({
       {/* Columna derecha: hilo de mensajes */}
       <section className="md:col-span-2 flex flex-col">
         {!otroUsuarioActivo ? (
-          <div className="flex-1 flex items-center justify-center p-6 text-center text-zinc-500 text-sm">
+          <div className="flex-1 flex items-center justify-center p-6 text-center text-[var(--muted)] text-sm">
             Selecciona una conversación o busca un usuario para enviar un mensaje privado.
           </div>
         ) : (
           <>
-            <header className="p-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between gap-3">
+            <header className="p-4 border-b border-[var(--border)] flex items-center justify-between gap-3">
               <div>
                 <Link
                   href={`/perfil/${otroUsuarioActivo.username}`}
-                  className="font-semibold hover:underline"
+                  className="font-semibold text-[var(--text)] hover:underline"
                 >
                   {otroUsuarioActivo.displayName}
                 </Link>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-[var(--muted)] m-0">
                   @{otroUsuarioActivo.username}
                 </p>
               </div>
@@ -442,7 +441,7 @@ export function BandejaMensajes({
                 <button
                   type="button"
                   onClick={() => void abrirConversacion(conversacionActivaId)}
-                  className="text-xs px-3 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
+                  className="pg-btn-secundario text-xs"
                 >
                   Actualizar
                 </button>
@@ -451,9 +450,9 @@ export function BandejaMensajes({
 
             <div className="flex-1 p-4 overflow-y-auto flex flex-col gap-3 max-h-[420px]">
               {cargandoHilo ? (
-                <p className="text-sm text-zinc-500">Cargando mensajes...</p>
+                <p className="text-sm text-[var(--muted)]">Cargando mensajes...</p>
               ) : mensajes.length === 0 ? (
-                <p className="text-sm text-zinc-500 text-center my-auto">
+                <p className="text-sm text-[var(--muted)] text-center my-auto">
                   Todavía no hay mensajes. Escribe el primero abajo.
                 </p>
               ) : (
@@ -469,13 +468,13 @@ export function BandejaMensajes({
                       <div
                         className={`px-3.5 py-2 rounded-xl text-sm whitespace-pre-wrap break-words ${
                           esMio
-                            ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                            : "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100"
+                            ? "bg-[var(--accent)] text-[#102016] font-medium"
+                            : "bg-[var(--surface-raised)] border border-[var(--border)] text-[var(--text)]"
                         }`}
                       >
                         {msg.content}
                       </div>
-                      <time className="text-[11px] text-zinc-400 mt-1">
+                      <time className="text-[11px] text-[var(--muted)] mt-1">
                         {formatearTiempo(new Date(msg.createdAt))}
                       </time>
                     </div>
@@ -484,11 +483,9 @@ export function BandejaMensajes({
               )}
             </div>
 
-            <div className="p-3 border-t border-zinc-200 dark:border-zinc-800">
+            <div className="p-3 border-t border-[var(--border)]">
               {errorEnvio && (
-                <p className="text-xs text-red-600 dark:text-red-400 mb-2">
-                  {errorEnvio}
-                </p>
+                <p className="text-xs text-red-400 mb-2">{errorEnvio}</p>
               )}
 
               {puedeResponder ? (
@@ -499,18 +496,18 @@ export function BandejaMensajes({
                     value={texto}
                     onChange={(e) => setTexto(e.target.value)}
                     placeholder="Escribe un mensaje..."
-                    className="flex-1 px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="pg-input flex-1"
                   />
                   <button
                     type="submit"
                     disabled={enviando || !texto.trim()}
-                    className="px-4 py-2 rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-sm font-semibold disabled:opacity-50 cursor-pointer"
+                    className="pg-btn"
                   >
                     {enviando ? "Enviando..." : "Enviar"}
                   </button>
                 </form>
               ) : (
-                <p className="text-xs text-zinc-500 text-center py-2">
+                <p className="text-xs text-[var(--muted)] text-center py-2 m-0">
                   {motivoBloqueo ??
                     "Este usuario solo acepta mensajes de sus amistades."}
                 </p>

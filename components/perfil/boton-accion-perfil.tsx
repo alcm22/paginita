@@ -15,10 +15,7 @@ export function BotonAccionPerfil({ usuarioDestinoId, estadoInicial }: Props) {
 
   if (estado === "PROPIO") {
     return (
-      <Link
-        href="/configuracion"
-        className="px-4 py-2 text-sm font-medium rounded-lg border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-      >
+      <Link href="/configuracion" className="pg-btn-secundario">
         Editar perfil
       </Link>
     );
@@ -26,7 +23,7 @@ export function BotonAccionPerfil({ usuarioDestinoId, estadoInicial }: Props) {
 
   if (estado === "AMIGOS") {
     return (
-      <span className="px-4 py-2 text-sm font-medium rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+      <span className="px-3.5 py-2 text-xs font-semibold rounded-lg bg-[#172b20] text-[var(--accent-strong)] border border-[#3c694d]">
         ✓ Amigos
       </span>
     );
@@ -34,7 +31,7 @@ export function BotonAccionPerfil({ usuarioDestinoId, estadoInicial }: Props) {
 
   if (estado === "SOLICITUD_ENVIADA") {
     return (
-      <span className="px-4 py-2 text-sm font-medium rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
+      <span className="px-3.5 py-2 text-xs font-semibold rounded-lg bg-[var(--surface-raised)] text-[var(--muted)] border border-[var(--border)]">
         Solicitud enviada
       </span>
     );
@@ -42,10 +39,7 @@ export function BotonAccionPerfil({ usuarioDestinoId, estadoInicial }: Props) {
 
   if (estado === "SOLICITUD_RECIBIDA") {
     return (
-      <Link
-        href="/amigos"
-        className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-      >
+      <Link href="/amigos" className="pg-btn text-xs">
         Responder solicitud
       </Link>
     );
@@ -74,7 +68,7 @@ export function BotonAccionPerfil({ usuarioDestinoId, estadoInicial }: Props) {
     <button
       onClick={enviarSolicitud}
       disabled={cargando}
-      className="px-4 py-2 text-sm font-medium rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90 transition-opacity disabled:opacity-50 cursor-pointer"
+      className="pg-btn text-xs"
     >
       {cargando ? "Enviando..." : "Añadir a amigos"}
     </button>
