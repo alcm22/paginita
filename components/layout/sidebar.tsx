@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
+import { ContadorNoLeidos } from "@/components/mensajes/contador-no-leidos";
 
 const navigation = [
   { href: "/inicio", label: "Inicio", icon: "⌂" },
@@ -11,7 +12,7 @@ const navigation = [
   { href: "/configuracion", label: "Configuración", icon: "⚙" },
 ];
 
-export function Sidebar() {
+export function Sidebar({ mensajesNoLeidos = 0 }: { mensajesNoLeidos?: number }) {
   return (
     <aside className="sidebar" aria-label="Navegación principal">
       <Logo />
@@ -20,6 +21,9 @@ export function Sidebar() {
           <Link className="nav-link" href={item.href} key={item.href}>
             <span aria-hidden="true" className="nav-icon">{item.icon}</span>
             <span>{item.label}</span>
+            {item.href === "/mensajes" && (
+              <ContadorNoLeidos inicial={mensajesNoLeidos} />
+            )}
           </Link>
         ))}
       </nav>

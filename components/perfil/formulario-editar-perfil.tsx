@@ -11,6 +11,7 @@ type UsuarioInicial = {
   email: string;
   avatarUrl: string | null;
   bio: string | null;
+  allowMessagesFrom: string;
 };
 
 export function FormularioEditarPerfil({ usuario }: { usuario: UsuarioInicial }) {
@@ -19,6 +20,9 @@ export function FormularioEditarPerfil({ usuario }: { usuario: UsuarioInicial })
   const [displayName, setDisplayName] = useState(usuario.displayName);
   const [bio, setBio] = useState(usuario.bio ?? "");
   const [avatarUrl, setAvatarUrl] = useState(usuario.avatarUrl ?? "");
+  const [allowMessagesFrom, setAllowMessagesFrom] = useState(
+    usuario.allowMessagesFrom === "FRIENDS" ? "FRIENDS" : "EVERYONE",
+  );
 
   const [cargando, setCargando] = useState(false);
   const [mensajeExito, setMensajeExito] = useState(false);
@@ -38,6 +42,7 @@ export function FormularioEditarPerfil({ usuario }: { usuario: UsuarioInicial })
           displayName: displayName.trim(),
           bio: bio.trim() || null,
           avatarUrl: avatarUrl.trim() || null,
+          allowMessagesFrom,
         }),
       });
 
@@ -148,6 +153,22 @@ export function FormularioEditarPerfil({ usuario }: { usuario: UsuarioInicial })
           placeholder="Cuenta un poco sobre ti, tus aficiones..."
           className="w-full p-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+      </div>
+
+      {/* Privacidad de mensajes */}
+      <div>
+        <label htmlFor="allowMessagesFrom" className="block text-sm font-medium mb-1">
+          ¿Quién puede enviarme mensajes privados?
+        </label>
+        <select
+          id="allowMessagesFrom"
+          value={allowMessagesFrom}
+          onChange={(e) => setAllowMessagesFrom(e.target.value)}
+          className="w-full p-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="EVERYONE">Cualquier usuario de Paginita</option>
+          <option value="FRIENDS">Solo mis amistades</option>
+        </select>
       </div>
 
       {/* Datos no editables informativos */}

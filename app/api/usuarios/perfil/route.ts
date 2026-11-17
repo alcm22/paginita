@@ -24,6 +24,11 @@ const esquemaPerfil = z.object({
     .optional()
     .nullable()
     .or(z.literal("")),
+  allowMessagesFrom: z
+    .enum(["EVERYONE", "FRIENDS"], {
+      message: "La preferencia de mensajes debe ser EVERYONE o FRIENDS.",
+    })
+    .optional(),
 });
 
 export async function PATCH(request: Request) {
@@ -61,6 +66,9 @@ export async function PATCH(request: Request) {
         displayName: validacion.data.displayName,
         bio: validacion.data.bio ? validacion.data.bio : null,
         avatarUrl: validacion.data.avatarUrl ? validacion.data.avatarUrl : null,
+        ...(validacion.data.allowMessagesFrom !== undefined
+          ? { allowMessagesFrom: validacion.data.allowMessagesFrom }
+          : {}),
       },
       select: {
         id: true,
@@ -68,6 +76,7 @@ export async function PATCH(request: Request) {
         username: true,
         avatarUrl: true,
         bio: true,
+        allowMessagesFrom: true,
       },
     });
 

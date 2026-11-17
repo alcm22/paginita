@@ -20,6 +20,7 @@ export default async function ConfiguracionPage() {
       email: true,
       avatarUrl: true,
       bio: true,
+      allowMessagesFrom: true,
     },
   });
 

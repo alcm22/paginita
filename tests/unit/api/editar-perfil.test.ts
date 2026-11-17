@@ -75,6 +75,25 @@ describe("PATCH /api/usuarios/perfil", () => {
     expect(response.status).toBe(400);
   });
 
+  it("devuelve 400 si allowMessagesFrom no es válido", async () => {
+    getServerSessionMock.mockResolvedValue({
+      user: { id: "usuario-123" },
+    });
+
+    const request = new Request("http://localhost/api/usuarios/perfil", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        displayName: "Manuel",
+        allowMessagesFrom: "NADIE",
+      }),
+    });
+
+    const response = await PATCH(request);
+    expect(response.status).toBe(400);
+    expect(userUpdateMock).not.toHaveBeenCalled();
+  });
+
   it("actualiza el perfil correctamente con datos válidos", async () => {
     getServerSessionMock.mockResolvedValue({
       user: { id: "usuario-123" },
@@ -86,6 +105,7 @@ describe("PATCH /api/usuarios/perfil", () => {
       username: "manuel",
       avatarUrl: "https://ejemplo.com/avatar.jpg",
       bio: "Nueva biografía",
+      allowMessagesFrom: "EVERYONE",
     };
 
     userUpdateMock.mockResolvedValue(usuarioActualizado);
@@ -116,6 +136,54 @@ describe("PATCH /api/usuarios/perfil", () => {
         username: true,
         avatarUrl: true,
         bio: true,
+        allowMessagesFrom: true,
+      },
+    });
+  });
+
+  it("actualiza la preferencia de privacidad de mensajes", async () => {
+    getServerSessionMock.mockResolvedValue({
+      user: { id: "usuario-123" },
+    });
+
+    const usuarioActualizado = {
+      id: "usuario-123",
+      displayName: "Manuel",
+      username: "manuel",
+      avatarUrl: null,
+      bio: null,
+      allowMessagesFrom: "FRIENDS",
+    };
+
+    userUpdateMock.mockResolvedValue(usuarioActualizado);
+
+    const request = new Request("http://localhost/api/usuarios/perfil", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        displayName: "Manuel",
+        allowMessagesFrom: "FRIENDS",
+      }),
+    });
+
+    const response = await PATCH(request);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual(usuarioActualizado);
+    expect(userUpdateMock).toHaveBeenCalledWith({
+      where: { id: "usuario-123" },
+      data: {
+        displayName: "Manuel",
+        bio: null,
+        avatarUrl: null,
+        allowMessagesFrom: "FRIENDS",
+      },
+      select: {
+        id: true,
+        displayName: true,
+        username: true,
+        avatarUrl: true,
+        bio: true,
+        allowMessagesFrom: true,
       },
     });
   });

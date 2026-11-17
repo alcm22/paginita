@@ -19,6 +19,7 @@ export async function consultarPerfil(
       username: true,
       avatarUrl: true,
       bio: true,
+      allowMessagesFrom: true,
       createdAt: true,
       _count: {
         select: {
