@@ -1,7 +1,5 @@
-
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { ZodError } from "zod";
 
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -33,7 +31,7 @@ export async function POST(request: Request) {
   if (!result.success) {
     return NextResponse.json(
       {
-        error: "La publicación no es válida.",
+        error: result.error.issues[0]?.message ?? "La publicación no es válida.",
         details: result.error.issues.map((issue) => ({
           field: issue.path.join("."),
           message: issue.message,
@@ -47,11 +45,13 @@ export async function POST(request: Request) {
     const post = await prisma.post.create({
       data: {
         content: result.data.content,
+        imageUrl: result.data.imageUrl ? result.data.imageUrl : null,
         authorId: session.user.id,
       },
       select: {
         id: true,
         content: true,
+        imageUrl: true,
         createdAt: true,
         updatedAt: true,
         author: {

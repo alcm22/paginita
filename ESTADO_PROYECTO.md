@@ -133,3 +133,14 @@ No marcar una funcionalidad como terminada sin comprobarla.
   - Ejecutar verificación general (`pnpm check`) que incluye linting, chequeo de tipos TypeScript y build de producción.
   - Implementar módulo de fotos (`/fotos`) o mensajería privada (`/mensajes`).
   - Revisión y pulido del diseño visual con Tailwind.
+
+## Registro de trabajo - 17/11/2026
+
+- **Tareas realizadas:**
+  1. Sincronizado historial de migraciones de Prisma en Neon (incluida migración de `Notification`).
+  2. Implementada mensajería privada 1 a 1 (`/mensajes`), selector de privacidad (*Cualquier usuario* / *Solo amistades*) en `/registro` y `/configuracion`, botón desde perfiles y contador de mensajes sin leer en la barra lateral.
+  3. Implementado soporte de imágenes en publicaciones (`Post.imageUrl`) con vista previa, visualización en feed/perfiles y galería `/fotos` con filtros (*Todas*, *Amigos*, *Mis fotos*) y visor ampliado.
+
+- **Pruebas ejecutadas y resultados:**
+  - `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (13 archivos, 79 tests) y `pnpm build`: todos pasando en verde.
+  - Comprobación manual en navegador: mensajería, privacidad, contador de no leídos, publicación con foto y galería `/fotos`.

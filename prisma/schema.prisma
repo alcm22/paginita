@@ -62,6 +62,7 @@ model Friendship {
 model Post {
   id        String   @id @default(cuid())
   content   String   @db.VarChar(5000)
+  imageUrl     String?
   authorId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

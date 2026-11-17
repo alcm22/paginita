@@ -92,6 +92,7 @@ export async function consultarPerfil(
     select: {
       id: true,
       content: true,
+      imageUrl: true,
       createdAt: true,
       updatedAt: true,
       author: {

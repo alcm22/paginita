@@ -53,10 +53,27 @@ export default async function PerfilUsuarioPage({ params }: PageProps) {
             </div>
           </div>
 
-          <BotonAccionPerfil
-            usuarioDestinoId={usuario.id}
-            estadoInicial={estadoAmistad}
-          />
+          <div className="flex flex-col items-end gap-2">
+            <BotonAccionPerfil
+              usuarioDestinoId={usuario.id}
+              estadoInicial={estadoAmistad}
+            />
+
+            {estadoAmistad !== "PROPIO" &&
+              (usuario.allowMessagesFrom === "EVERYONE" ||
+              estadoAmistad === "AMIGOS" ? (
+                <Link
+                  href={`/mensajes?con=${usuario.username}`}
+                  className="text-xs px-3 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  Enviar mensaje
+                </Link>
+              ) : (
+                <span className="text-xs text-zinc-400">
+                  Solo acepta mensajes de amistades
+                </span>
+              ))}
+          </div>
         </div>
 
         {usuario.bio && (
@@ -125,6 +142,7 @@ export default async function PerfilUsuarioPage({ params }: PageProps) {
                 </header>
 
                 <CuerpoPublicacion
+                imagenUrl={publicacion.imageUrl}
                 publicacionId={publicacion.id}
                 contenidoInicial={publicacion.content}
                 esAutor={session?.user?.id === publicacion.author.id}

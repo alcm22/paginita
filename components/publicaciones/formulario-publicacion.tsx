@@ -1,14 +1,27 @@
-
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+function esUrlHttpValida(valor: string): boolean {
+  try {
+    const url = new URL(valor);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export function FormularioPublicacion() {
-  const router = useRouter();  
+  const router = useRouter();
   const [contenido, setContenido] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [mensaje, setMensaje] = useState("");
+
+  const imagenLimpia = imageUrl.trim();
+  const mostrarPreview = esUrlHttpValida(imagenLimpia);
 
   async function publicar(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -16,8 +29,8 @@ export function FormularioPublicacion() {
 
     const texto = contenido.trim();
 
-    if (!texto) {
-      setMensaje("Escribe algo antes de publicar.");
+    if (!texto && !imagenLimpia) {
+      setMensaje("Escribe algo o añade una imagen antes de publicar.");
       return;
     }
 
@@ -29,7 +42,10 @@ export function FormularioPublicacion() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ content: texto }),
+        body: JSON.stringify({
+          content: texto,
+          imageUrl: imagenLimpia || null,
+        }),
       });
 
       const datos = await respuesta.json();
@@ -40,6 +56,7 @@ export function FormularioPublicacion() {
       }
 
       setContenido("");
+      setImageUrl("");
       setMensaje("¡Tu publicación se ha creado correctamente!");
       router.refresh();
     } catch {
@@ -66,14 +83,45 @@ export function FormularioPublicacion() {
           placeholder="¿Qué tienes en mente?"
           maxLength={5000}
           rows={4}
-          required
           disabled={enviando}
         />
+
+        <div className="mt-3">
+          <label htmlFor="imagen-publicacion" className="block text-sm font-medium mb-1">
+            Imagen (URL opcional)
+          </label>
+          <input
+            id="imagen-publicacion"
+            name="imageUrl"
+            type="url"
+            value={imageUrl}
+            onChange={(event) => setImageUrl(event.target.value)}
+            placeholder="https://ejemplo.com/foto.jpg"
+            disabled={enviando}
+            className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {mostrarPreview && (
+          <div className="mt-3 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800 max-w-md">
+            <Image
+              src={imagenLimpia}
+              alt="Vista previa de la imagen"
+              width={480}
+              height={320}
+              unoptimized
+              className="w-full max-h-64 object-cover"
+            />
+          </div>
+        )}
 
         <div className="publicacion-formulario-pie">
           <span>{contenido.length}/5000 caracteres</span>
 
-          <button type="submit" disabled={enviando || !contenido.trim()}>
+          <button
+            type="submit"
+            disabled={enviando || (!contenido.trim() && !imagenLimpia)}
+          >
             {enviando ? "Publicando..." : "Publicar"}
           </button>
         </div>

@@ -128,6 +128,7 @@ export default async function InicioPage({ searchParams }: InicioPageProps) {
                 </header>
 
               <CuerpoPublicacion
+                imagenUrl={publicacion.imageUrl}
                 publicacionId={publicacion.id}
                 contenidoInicial={publicacion.content}
                 esAutor={session?.user?.id === publicacion.author.id}

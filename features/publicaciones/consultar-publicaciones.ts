@@ -44,6 +44,7 @@ export async function consultarPublicaciones(
     select: {
       id: true,
       content: true,
+      imageUrl: true,
       createdAt: true,
       updatedAt: true,
       author: {

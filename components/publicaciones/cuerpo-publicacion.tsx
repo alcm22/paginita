@@ -1,72 +1,64 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 type Props = {
   publicacionId: string;
   contenidoInicial: string;
+  imagenUrl?: string | null;
   esAutor: boolean;
 };
 
 export function CuerpoPublicacion({
   publicacionId,
   contenidoInicial,
+  imagenUrl,
   esAutor,
 }: Props) {
   const router = useRouter();
-  const [contenido, setContenido] = useState(contenidoInicial);
   const [editando, setEditando] = useState(false);
-  const [textoEditado, setTextoEditado] = useState(contenidoInicial);
-  const [cargando, setCargando] = useState(false);
-  const [eliminado, setEliminado] = useState(false);
+  const [contenido, setContenido] = useState(contenidoInicial);
+  const [guardando, setGuardando] = useState(false);
+  const [eliminando, setEliminando] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (eliminado) {
-    return null; // Ocultar inmediatamente la publicación al borrarla
-  }
-
-  async function handleGuardar(e: React.FormEvent) {
+  async function guardarEdicion(e: React.FormEvent) {
     e.preventDefault();
-    if (!textoEditado.trim()) return;
+    const limpio = contenido.trim();
+    if (!limpio) return;
 
-    setCargando(true);
+    setGuardando(true);
     setError(null);
 
     try {
       const res = await fetch(`/api/publicaciones/${publicacionId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: textoEditado.trim() }),
+        body: JSON.stringify({ content: limpio }),
       });
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Error al actualizar la publicación");
+        throw new Error(data.error || "Error al editar");
       }
 
-      const postActualizado = await res.json();
-      setContenido(postActualizado.content);
       setEditando(false);
       router.refresh();
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Error inesperado al guardar los cambios.");
-      }
+      setError(err instanceof Error ? err.message : "Error inesperado");
     } finally {
-      setCargando(false);
+      setGuardando(false);
     }
   }
 
-  async function handleEliminar() {
-    const seguro = window.confirm(
-      "¿Estás seguro de que quieres eliminar esta publicación?",
-    );
-    if (!seguro) return;
+  async function eliminar() {
+    if (!window.confirm("¿Seguro que quieres eliminar esta publicación?")) {
+      return;
+    }
 
-    setCargando(true);
+    setEliminando(true);
     try {
       const res = await fetch(`/api/publicaciones/${publicacionId}`, {
         method: "DELETE",
@@ -77,46 +69,42 @@ export function CuerpoPublicacion({
         throw new Error(data.error || "Error al eliminar");
       }
 
-      setEliminado(true);
       router.refresh();
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Error al eliminar la publicación");
-    } finally {
-      setCargando(false);
+      alert(err instanceof Error ? err.message : "Error al eliminar");
+      setEliminando(false);
     }
   }
 
   if (editando) {
     return (
-      <form onSubmit={handleGuardar} className="my-3 flex flex-col gap-2">
+      <form onSubmit={guardarEdicion} className="my-2 flex flex-col gap-2">
         <textarea
-          value={textoEditado}
-          onChange={(e) => setTextoEditado(e.target.value)}
-          className="w-full p-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={contenido}
+          onChange={(e) => setContenido(e.target.value)}
           rows={3}
-          disabled={cargando}
+          maxLength={5000}
           required
+          className="w-full p-2 text-sm border rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         {error && <p className="text-xs text-red-500">{error}</p>}
-        <div className="flex gap-2 justify-end">
+        <div className="flex gap-2">
+          <button
+            type="submit"
+            disabled={guardando || !contenido.trim()}
+            className="px-3 py-1 text-xs font-medium bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 rounded hover:opacity-90 disabled:opacity-50"
+          >
+            {guardando ? "Guardando..." : "Guardar"}
+          </button>
           <button
             type="button"
             onClick={() => {
-              setTextoEditado(contenido);
               setEditando(false);
-              setError(null);
+              setContenido(contenidoInicial);
             }}
-            disabled={cargando}
-            className="px-3 py-1.5 text-xs font-medium rounded-md border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="px-3 py-1 text-xs border rounded hover:bg-zinc-100 dark:hover:bg-zinc-800"
           >
             Cancelar
-          </button>
-          <button
-            type="submit"
-            disabled={cargando || !textoEditado.trim()}
-            className="px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
-          >
-            {cargando ? "Guardando..." : "Guardar"}
           </button>
         </div>
       </form>
@@ -125,22 +113,39 @@ export function CuerpoPublicacion({
 
   return (
     <div className="my-2">
-      <p className="texto-publicacion">{contenido}</p>
+      {contenidoInicial && (
+        <p className="publicacion-contenido whitespace-pre-wrap">{contenidoInicial}</p>
+      )}
+
+      {imagenUrl && (
+        <div className="mt-3 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800">
+          <Image
+            src={imagenUrl}
+            alt="Imagen de la publicación"
+            width={800}
+            height={600}
+            unoptimized
+            className="w-full max-h-[480px] object-cover"
+          />
+        </div>
+      )}
 
       {esAutor && (
-        <div className="flex items-center gap-2 text-xs text-zinc-400 mt-1">
+        <div className="flex gap-3 mt-2 text-xs text-zinc-500">
           <button
+            type="button"
             onClick={() => setEditando(true)}
-            className="hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors cursor-pointer"
+            className="hover:text-blue-600 cursor-pointer"
           >
             Editar
           </button>
-          <span>·</span>
           <button
-            onClick={handleEliminar}
-            className="hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer"
+            type="button"
+            onClick={eliminar}
+            disabled={eliminando}
+            className="hover:text-red-600 cursor-pointer disabled:opacity-50"
           >
-            Eliminar
+            {eliminando ? "Eliminando..." : "Eliminar"}
           </button>
         </div>
       )}
