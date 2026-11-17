@@ -144,3 +144,18 @@ No marcar una funcionalidad como terminada sin comprobarla.
 - **Pruebas ejecutadas y resultados:**
   - `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (13 archivos, 79 tests) y `pnpm build`: todos pasando en verde.
   - Comprobación manual en navegador: mensajería, privacidad, contador de no leídos, publicación con foto y galería `/fotos`.
+
+## Registro de trabajo - 17/11/2026 (cierre visual y E2E)
+
+- **Tareas realizadas:**
+  1. Añadidos nombre/avatar del usuario conectado y botón de **Cerrar sesión** en la barra lateral.
+  2. Unificada la estética verde bosque oscuro en toda la aplicación (`globals.css`, acceso, registro, inicio, perfil, amigos, fotos, mensajes, notificaciones y configuración) y mejorado el diseño móvil.
+  3. Configurado `webServer` en `playwright.config.ts` y creada prueba E2E completa en `tests/e2e/flujo-principal.spec.ts` con limpieza automática del usuario de prueba.
+  4. Añadido script `postinstall` (`prisma generate`) en `package.json` para despliegue.
+
+- **Pruebas ejecutadas y resultados:**
+  - `pnpm typecheck`, `pnpm lint`, `pnpm test:run` (13 archivos, 79 tests), `pnpm build` y `pnpm test:e2e` (Playwright Chromium): todos pasando en verde.
+
+- **Pendientes antes de publicar:**
+  - Rotar la contraseña de Neon y actualizar `.env.local`.
+  - Configurar variables de entorno (`DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`) en el proveedor de despliegue (p. ej. Vercel).
